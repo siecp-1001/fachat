@@ -25,23 +25,23 @@ def advanced_chat(request):
 
     user = User.objects.get(id=user_id)
 
-    # Rate limit check
+    
     if not check_rate_limit(user):
         return JsonResponse({"reply": "Please wait a second before sending another message."})
 
-    # Intent detection
+    
     intent = detect_intent(msg)
 
-    # Load conversation memory
+    
     user_history = Conversation.objects.filter(user=user)
 
-    # Build messages for OpenAI
+    
     messages = build_message_history(user_history, msg, intent)
 
-    # Get AI response
+    
     reply = generate_response(messages)
 
-    # Save to database
+    
     Conversation.objects.create(user=user, message=msg, reply=reply)
 
     return JsonResponse({

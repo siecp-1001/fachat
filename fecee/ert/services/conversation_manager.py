@@ -1,7 +1,7 @@
 from .message_builder import system_messages
 
 def build_message_history(conversation_queryset, new_user_message, intent):
-    history = system_messages[intent][:]  # Load system profile for the bot
+    history = system_messages[intent][:]  
 
     for conv in conversation_queryset:
         history.append({"role": "user", "content": conv.message})
