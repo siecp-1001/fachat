@@ -11,10 +11,13 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-
+import os
+from dotenv import load_dotenv
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+OPENAI_API_KEY = os.getenv("Osk-proj-urWjgJNAj6123bWvKyVUhjKRcwTh8bLUmyUM80aIXkPmWSuQ2Er5mOnHKI726jdnI08qYbx2z_T3BlbkFJP54_S3g1cAsE9V5bblBRV9ut-VnrUlTgVANPYwXvb5RKmtfpUkv5SeuwG4UYoUwL3ryeR45eIA")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -37,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'ert',
 ]
 
 MIDDLEWARE = [

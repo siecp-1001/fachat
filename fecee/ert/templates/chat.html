@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Service Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            margin-top: 50px;
+        }
+
+        #chat-container {
+            width: 500px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            height: 500px;
+        }
+
+        #chat-box {
+            flex: 1;
+            overflow-y: auto;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+
+        .message {
+            margin: 5px 0;
+            padding: 8px 12px;
+            border-radius: 12px;
+            max-width: 80%;
+        }
+
+        .user {
+            background-color: #d0f0fd;
+            align-self: flex-end;
+        }
+
+        .bot {
+            background-color: #f0f0f0;
+            align-self: flex-start;
+        }
+
+        #input-container {
+            display: flex;
+        }
+
+        #msg {
+            flex: 1;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            margin-right: 5px;
+        }
+
+        #send-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+        #send-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div id="chat-container">
+    <div id="chat-box"></div>
+    <div id="input-container">
+        <input id="msg" type="text" placeholder="Type your message..." />
+        <button id="send-btn">Send</button>
+    </div>
+</div>
+
+<script>
+    const chatBox = document.getElementById("chat-box");
+    const msgInput = document.getElementById("msg");
+    const sendBtn = document.getElementById("send-btn");
+
+    // Append message to chat box
+    function addMessage(text, sender) {
+        const div = document.createElement("div");
+        div.classList.add("message", sender);
+        div.textContent = text;
+        chatBox.appendChild(div);
+        chatBox.scrollTop = chatBox.scrollHeight; // auto-scroll
+    }
+
+    // Send message to backend
+    async function sendMessage() {
+        const msg = msgInput.value.trim();
+        if (!msg) return;
+
+        addMessage(msg, "user"); // show user message immediately
+        msgInput.value = "";
+
+        try {
+            const response = await fetch("/chat/ask/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({message: msg, user: 1}) // change user ID as needed
+            });
+
+            const data = await response.json();
+            if (data.reply) {
+                addMessage(data.reply, "bot"); // show bot reply
+            } else if (data.error) {
+                addMessage("Error: " + data.error, "bot");
+            }
+
+        } catch (err) {
+            addMessage("Network error. Please try again.", "bot");
+        }
+    }
+
+    sendBtn.addEventListener("click", sendMessage);
+
+    msgInput.addEventListener("keydown", function(e) {
+        if (e.key === "Enter") {
+            sendMessage();
+        }
+    });
+</script>
+
+</body>
+</html>
